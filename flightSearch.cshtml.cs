@@ -1,11 +1,7 @@
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using System.Text.Json;
-using WebApplication9.Pages;
-using System.IO;
-using WebApplication9.Pages;
 using Newtonsoft.Json;
 using System.Text;
+using WebApplication9.Pages;
 
 namespace WebApplication9.Pages
 {
@@ -149,9 +145,9 @@ public class FlightSearchEngine : PageModel
         {
             "London", "Paris", "Berlin", "Porto", "Istanbul", "Amsterdam", "Geneva", "Brussels"
         };
-        
+
         flightGenerator = new FlightGenerator();
-}
+    }
 
     public void SetFlightPairs(List<Dictionary<string, object>> flightPairs)
     {
@@ -169,7 +165,7 @@ public class FlightSearchEngine : PageModel
         {
             return false;
         }
-        
+
         return form.GetHasData();
     }
 
@@ -238,9 +234,9 @@ public class FlightSearchEngine : PageModel
     public void InitializeFlights()
     {
 
-        
         string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Pages", "flights.json");
         string json;
+
         using (StreamReader sr = new StreamReader(filePath))
         {
             json = sr.ReadToEnd();
@@ -281,6 +277,11 @@ public class FlightSearchEngine : PageModel
 
             var departDateString = searchCriteria.GetEarlyDept().ToString("yyyy.MM.dd");
             var returnDateString = searchCriteria.GetLateReturn().ToString("yyyy.MM.dd");
+
+
+            Console.WriteLine($"Flight Date: {flightDate}");
+            Console.WriteLine($"Parsed Depart Date: {DateTime.Parse(departDateString).Date}");
+
 
             if (flightDate == DateTime.Parse(departDateString).Date && originAirport.Trim() == searchCriteria.GetDeptAirport().Trim() && destinationAirport.Trim() == searchCriteria.GetDestAirport().Trim())
             {
@@ -412,9 +413,9 @@ public class FlightSearchEngine : PageModel
                 htmlBuilder.Append("<div class=\"container\">");
                 htmlBuilder.Append("<div class=\"text-box\">");
                 htmlBuilder.Append("<p class=\"text\">");
-                htmlBuilder.Append(PrintFlightDetails(outboundFlight));
+                htmlBuilder.Append(outboundFlight.getFlightDetails());
                 htmlBuilder.Append(" | ");
-                htmlBuilder.Append(PrintFlightDetails(returnFlight));
+                htmlBuilder.Append(returnFlight.getFlightDetails());
                 htmlBuilder.Append($" ${price}");
                 htmlBuilder.Append("</p>");
                 htmlBuilder.Append("</div>");
@@ -429,15 +430,6 @@ public class FlightSearchEngine : PageModel
         return htmlBuilder.ToString();
     }
 
-    private string PrintFlightDetails(Flight flight)
-    {
-        return $"Departure: {flight.GetDepartureTime()}, " +
-               $"Origin: {flight.GetOrigin()}, " +
-               $"Destination: {flight.GetDestination()}, " +
-               $"Duration: {flight.GetDuration()}, " +
-               $"Arrival: {flight.GetArrivalTime()}, " +
-               $"Airline: {flight.GetAirline()}<br>";
-    }
 }
 
 public class Flight
@@ -536,31 +528,30 @@ public class Flight
         this.duration = duration;
     }
 
-    public void PrintFlightDetails()
+    public string getFlightDetails()
     {
-        Console.WriteLine(departureTime);
-        Console.WriteLine(origin);
-        Console.WriteLine("->");
-        Console.WriteLine(destination);
-        Console.WriteLine(duration);
-        Console.WriteLine(arrivalTime);
-        Console.WriteLine(airline);
+        return GetDepartureTime() + " " +
+               GetOrigin() + " " + "-> " +
+               GetDestination() + " " +
+               GetDuration() + " " +
+               GetArrivalTime() + " " +
+               GetAirline();
     }
 }
 
-    public class FlightSearchFormHandler
+public class FlightSearchFormHandler
 {
-        private bool sort = false;
-        private bool hasData = false;
-        private string deptAirport = "";
-        private string destAirport = "";
-        private string departDay = "";
-        private string returnDay = "";
-        private string flightClass = "";
-        private int cabinBags = 0;
-        private int checkedBags = 0;
-        private DateTime earlyDept = DateTime.Now;
-        private DateTime lateReturn = DateTime.Now;
+    private bool sort = false;
+    private bool hasData = false;
+    private string deptAirport = "";
+    private string destAirport = "";
+    private string departDay = "";
+    private string returnDay = "";
+    private string flightClass = "";
+    private int cabinBags = 0;
+    private int checkedBags = 0;
+    private DateTime earlyDept = DateTime.Now;
+    private DateTime lateReturn = DateTime.Now;
 
     public FlightSearchFormHandler(string deptAirport, string destAirport, string departDay, string returnDay, string flightClass, int cabinBags, int checkedBags, DateTime earlyDept, DateTime lateReturn, bool sort)
     {
@@ -577,59 +568,59 @@ public class Flight
     }
 
     public void SetHasData(bool value)
-        {
-            hasData = value;
-        }
+    {
+        hasData = value;
+    }
 
-        public void SetDeptAirport(string value)
-        {
-            deptAirport = value;
-        }
+    public void SetDeptAirport(string value)
+    {
+        deptAirport = value;
+    }
 
-        public void SetDestAirport(string value)
-        {
-            destAirport = value;
-        }
+    public void SetDestAirport(string value)
+    {
+        destAirport = value;
+    }
 
-        public void SetDepartDay(string value)
-        {
-            departDay = value;
-        }
+    public void SetDepartDay(string value)
+    {
+        departDay = value;
+    }
 
-        public void SetReturnDay(string value)
-        {
-            returnDay = value;
-        }
+    public void SetReturnDay(string value)
+    {
+        returnDay = value;
+    }
 
-        public void SetFlightClass(string value)
-        {
-            flightClass = value;
-        }
+    public void SetFlightClass(string value)
+    {
+        flightClass = value;
+    }
 
-        public void SetCabinBags(int value)
-        {
-            cabinBags = value;
-        }
+    public void SetCabinBags(int value)
+    {
+        cabinBags = value;
+    }
 
-        public void SetCheckedBags(int value)
-        {
-            checkedBags = value;
-        }
+    public void SetCheckedBags(int value)
+    {
+        checkedBags = value;
+    }
 
-        public void SetEarlyDept(DateTime value)
-        {
-            earlyDept = value;
-        }
+    public void SetEarlyDept(DateTime value)
+    {
+        earlyDept = value;
+    }
 
-        public void SetLateReturn(DateTime value)
-        {
-            lateReturn = value;
-        }
+    public void SetLateReturn(DateTime value)
+    {
+        lateReturn = value;
+    }
 
-        public bool GetHasData()
-        {
-            return hasData;
-        }
+    public bool GetHasData()
+    {
+        return hasData;
+    }
 
     public bool GetSort()
     {

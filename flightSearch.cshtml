@@ -1,4 +1,6 @@
-﻿@model FlightSearchEngine
+﻿
+@page
+@model FlightSearchEngine
 @{
 }
 
@@ -7,8 +9,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flight Search</title>
-    <link rel="stylesheet" type="text/css" href="Styles.css">
+    <style>
+        .logo {
+            margin-top: 90px;
+            font-family: "Abril Fatface", serif;
+            font-weight: 400;
+            font-style: normal;
+            color: black;
+            font-size: 75px;
+            text-align: center;
+        }
+
+        .user-input {
+            margin-top: 50px;
+            font-family: "Sarabun", sans-serif;
+            font-style: normal;
+            color: black;
+            font-size: 18px;
+            margin: 0 auto;
+            width: 900px;
+            align: center;
+            line-height: 3;
+        }
+
+        label {
+            margin-right: 5px;
+            color: black;
+        }
+
+        select {
+            margin-right: 10px;
+            background-color: #999;
+            color: white;
+            padding: 2px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 16px;
+            border: 0.5px solid #000;
+        }
+
+        .dropdown select:hover {
+            background-color: #45a049;
+        }
+
+        input[type="date"] {
+            margin-right: 5px;
+            background-color: #999;
+            color: white;
+            padding: 0px;
+            border: none;
+            border-radius: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            border: 0.5px solid #000;
+        }
+
+        .container {
+            width: 1050px;
+            text-align: center;
+            margin: 0 auto 60px;
+        }
+
+        .text-box {
+            background-color: #45a049;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 0.5px solid #000;
+            border-radius: 10px;
+            overflow: hidden;
+            color: white;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        .search-button {
+            background-color: #45a049;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 50px;
+            margin-left: 50px;
+            border: 0.5px solid #000;
+        }
+    </style>
+
 </head>
 <body>
 
@@ -104,6 +194,171 @@
             </select>
 
             <input class="search-button" type="submit" value="Search">
+
+            <script>
+
+                function convertDateToDateObj(date) {
+                    var date = new Date(date.value);
+                    return new Date(date.toLocaleDateString().split("/").reverse().join("-"));
+
+                }
+
+                function getDateDifference(earliestObj, latestObj) {
+                    var diff = latestObj.getTime() - earliestObj.getTime();
+                    return diffDays = diff / (60 * 60 * 24 * 1000);
+                }
+
+                function renableDaySelect() {
+                    for (var i = 0; i < 8; i++) {
+                        document.getElementById("returnDay").options[i].disabled = false;
+                        document.getElementById("departDay").options[i].disabled = false;
+                    }
+
+                }
+
+                function disableDaySelect() {
+                    for (var i = 0; i < 8; i++) {
+                        document.getElementById("returnDay").options[i].disabled = true;
+                        document.getElementById("departDay").options[i].disabled = true;
+                    }
+
+                }
+
+                function correctReturnDays() {
+                    var earliestObj = convertDateToDateObj(earliest);
+                    var latestObj = convertDateToDateObj(latest);
+                    var diffDays = getDateDifference(earliestObj, latestObj);
+
+                    if (diffDays < 7) {
+                        diffDays = getDateDifference(earliestObj, latestObj);
+                        var day = earliestObj.getUTCDay();
+                        var i = 0;
+                        while (i <= diffDays) {
+                            document.getElementById("returnDay").options[day].disabled = false;
+                            day++;
+                            if (day === 8) {
+                                day = 1;
+                            }
+                            i++;
+                        }
+                    } else {
+                        renableDaySelect();
+                    }
+                }
+
+                function correctDepartDays() {
+                    var earliestObj = convertDateToDateObj(earliest);
+                    var latestObj = convertDateToDateObj(latest);
+                    var diffDays = getDateDifference(earliestObj, latestObj);
+                    if (diffDays < 7) {
+                        diffDays = getDateDifference(earliestObj, latestObj);
+                        var day = earliestObj.getUTCDay();
+                        var i = 0;
+                        while (i <= diffDays) {
+                            document.getElementById("departDay").options[day].disabled = false;
+                            day++;
+                            if (day === 8) {
+                                day = 1;
+                            }
+                            i++;
+                        }
+                    } else {
+                        renableDaySelect();
+                    }
+                }
+
+                function correctDays() {
+                    disableDaySelect();
+
+                    correctReturnDays();
+
+                    correctDepartDays();
+                }
+
+                function forceDepartBeforeReturn() {
+                    forceDepartBeforeReturnDate();
+                    forceDepartBeforeReturnDay();
+                }
+
+                function forceDepartBeforeReturnDate() {
+                    if (latest.value <= earliest.value) {
+
+                        latest.value = earliest.value;
+                    }
+                }
+
+                function dayToInt(day) {
+                    if (day === "Monday") {
+                        var num = 1;
+                    }
+                    if (day === "Tuesday") {
+                        var num = 2;
+                    }
+                    if (day === "Wednesday") {
+                        var num = 3;
+                    }
+                    if (day === "Thursday") {
+                        var num = 4;
+                    }
+                    if (day === "Friday") {
+                        var num = 5;
+                    }
+                    if (day === "Saturday") {
+                        var num = 6;
+                    }
+                    if (day === "Sunday") {
+                        var num = 7;
+                    }
+
+                    return num;
+                }
+
+                function forceDepartBeforeReturnDay() {
+                    var i = 1;
+                    var earliestInt = dayToInt(document.getElementById("departDay").value);
+                    var earliestObj = convertDateToDateObj(earliest);
+                    var latestObj = convertDateToDateObj(latest);
+                    var diffDays = getDateDifference(earliestObj, latestObj);
+                    if (diffDays < 7 && earliestInt >= 1 && earliestInt <= 7) {
+                        while (i < earliestInt) {
+                            document.getElementById("returnDay").options[i].disabled = true;
+                            i++;
+                        }
+                    }
+                }
+
+                var earliest = document.getElementById("earlyDept");
+                var latest = document.getElementById("lateReturn");
+                var earliestDay = convertDateToDateObj(document.getElementById("departDay"));
+                var latestDay = convertDateToDateObj(document.getElementById("returnDay"));
+
+                earliest.addEventListener("input", function () {
+
+                    correctDays();
+
+                    forceDepartBeforeReturn();
+
+                });
+                latest.addEventListener("input", function () {
+
+                    correctDays();
+
+                    forceDepartBeforeReturn();
+
+                });
+
+                document.getElementById("departDay").addEventListener("change", function () {
+
+                    forceDepartBeforeReturn();
+
+                });
+
+                document.getElementById("returnDay").addEventListener("change", function () {
+
+                    forceDepartBeforeReturn();
+
+                });
+            </script>
         </div>
     </form>
 
