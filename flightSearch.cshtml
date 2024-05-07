@@ -1,0 +1,120 @@
+﻿@model FlightSearchEngine
+@{
+}
+
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Search</title>
+    <link rel="stylesheet" type="text/css" href="Styles.css">
+</head>
+<body>
+
+    <header>
+        <h1 class="logo">Flight Search Engine</h1>
+    </header>
+
+    <form method="POST">
+        <div class="user-input">
+            <label for="deptAirport">From: </label>
+            <select name="deptAirport" id="deptAirport">
+                <option value="London">London</option>
+                <option value="Paris">Paris</option>
+                <option value="Berlin">Berlin</option>
+                <option value="Porto">Porto</option>
+                <option value="Istanbul">Istanbul</option>
+                <option value="Amsterdam">Amsterdam</option>
+                <option value="Geneva">Geneva</option>
+                <option value="Brussels">Brussels</option>
+            </select>
+
+            <label for="destAirport">To: </label>
+            <select name="destAirport" id="destAirport">
+                <option value="London">London</option>
+                <option value="Paris">Paris</option>
+                <option value="Berlin">Berlin</option>
+                <option value="Porto">Porto</option>
+                <option value="Istanbul">Istanbul</option>
+                <option value="Amsterdam">Amsterdam</option>
+                <option value="Geneva">Geneva</option>
+                <option value="Brussels">Brussels</option>
+            </select>
+
+            <label for="earlyDept">Earliest departure:</label>
+            <input type="date" id="earlyDept" name="earlyDept" min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+            <label for="lateReturn">Latest return:</label>
+            <input type="date" id="lateReturn" name="lateReturn" min="@DateTime.Now.ToString("yyyy-MM-dd")" required>
+
+            <label for="departDay">Departing:</label>
+            <select name="departDay" id="departDay">
+                <option disabled selected value="">Day of return</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+            </select>
+
+            <label for="returnDay">Returning:</label>
+            <select name="returnDay" id="returnDay">
+                <option disabled selected value="">Day of return</option>
+                <option value="Monday">Monday</option>
+                <option value="Tuesday">Tuesday</option>
+                <option value="Wednesday">Wednesday</option>
+                <option value="Thursday">Thursday</option>
+                <option value="Friday">Friday</option>
+                <option value="Saturday">Saturday</option>
+                <option value="Sunday">Sunday</option>
+            </select>
+
+        </div>
+        <div class="user-input">
+
+            <label for="sort">Sort by price:</label>
+            <input type="checkbox" name="sort">
+
+            <label for="cabinBags">No of cabin bags:</label>
+            <select name="cabinBags" id="cabinBags">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+            <label for="checkedBags">No of checked bags:</label>
+            <select name="checkedBags" id="checkedBags">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+
+            <label for="class">Class:</label>
+            <select name="class" id="class">
+                <option value="econ">Economy</option>
+                <option value="premEcon">Premium Economy</option>
+                <option value="business">Business</option>
+                <option value="first">First</option>
+            </select>
+
+            <input class="search-button" type="submit" value="Search">
+        </div>
+    </form>
+
+    @if (Model.GetHasData())
+    {
+
+        @Html.Raw(Model.GetFlightSearchResults());
+
+    }
+
+</body>
+</html>
+
+
