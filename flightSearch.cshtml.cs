@@ -238,23 +238,16 @@ public class FlightSearchEngine : PageModel
     public void InitializeFlights()
     {
 
-        // Specify the file path
+        
         string filePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Pages", "flights.json");
-
-        // Create a string to hold the JSON data
         string json;
-
-        // Read the JSON data from the file using StreamReader
         using (StreamReader sr = new StreamReader(filePath))
         {
-            // Read the entire content of the file
             json = sr.ReadToEnd();
         }
 
-        // Deserialize the JSON data into a list of Flight objects
         List<Flight> flights = new List<Flight>();
 
-        // Deserialize each flight object manually and add it to the list
         foreach (var flightData in JsonConvert.DeserializeObject<List<Dictionary<string, object>>>(json))
         {
             DateTime departureTime = DateTime.ParseExact((string)flightData["departure_time"], "yyyy.MM.dd HH:mm", null);
@@ -270,7 +263,6 @@ public class FlightSearchEngine : PageModel
             long businessMultiplier = (long)flightData["business_multiplier"];
             long firstMultiplier = (long)flightData["first_multiplier"];
 
-            // Create a new Flight object and add it to the list
             Flight flight = new Flight(departureTime, origin, destination, duration, arrivalTime, airline, price, checkedBagCost, cabinBagCost, premiumEconMultiplier, businessMultiplier, firstMultiplier);
             flights.Add(flight);
         }
@@ -289,11 +281,6 @@ public class FlightSearchEngine : PageModel
 
             var departDateString = searchCriteria.GetEarlyDept().ToString("yyyy.MM.dd");
             var returnDateString = searchCriteria.GetLateReturn().ToString("yyyy.MM.dd");
-
-
-            Console.WriteLine($"Flight Date: {flightDate}");
-            Console.WriteLine($"Parsed Depart Date: {DateTime.Parse(departDateString).Date}");
-
 
             if (flightDate == DateTime.Parse(departDateString).Date && originAirport.Trim() == searchCriteria.GetDeptAirport().Trim() && destinationAirport.Trim() == searchCriteria.GetDestAirport().Trim())
             {
@@ -422,7 +409,6 @@ public class FlightSearchEngine : PageModel
                 var returnFlight = (Flight)pair["return"];
                 var price = (long)pair["price"];
 
-                // Build HTML string instead of writing directly
                 htmlBuilder.Append("<div class=\"container\">");
                 htmlBuilder.Append("<div class=\"text-box\">");
                 htmlBuilder.Append("<p class=\"text\">");
@@ -445,7 +431,6 @@ public class FlightSearchEngine : PageModel
 
     private string PrintFlightDetails(Flight flight)
     {
-        // Build HTML string instead of writing directly
         return $"Departure: {flight.GetDepartureTime()}, " +
                $"Origin: {flight.GetOrigin()}, " +
                $"Destination: {flight.GetDestination()}, " +
